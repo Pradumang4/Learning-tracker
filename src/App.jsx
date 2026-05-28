@@ -103,10 +103,7 @@ export default function App() {
             <h2>{logs.length}</h2>
           </div>
 
-          <div className="card">
-            <span>Total Time</span>
-            <h2>{Math.round(totalMinutes / 60)} hrs</h2>
-          </div>
+          
         </section>
 
         {todayLog && (
@@ -137,14 +134,7 @@ export default function App() {
               placeholder="Example: Aaj maine REST controller samjha aur ek simple GET API banaya..."
             />
 
-            <label>Minutes</label>
-            <input
-              type="number"
-              value={minutes}
-              onChange={(e) => setMinutes(e.target.value)}
-              placeholder="30"
-            />
-
+           
             <button type="submit">Save Today&apos;s Progress</button>
           </form>
         </section>
