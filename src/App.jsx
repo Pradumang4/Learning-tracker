@@ -1,41 +1,28 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useState } from "react";
 
 const STORAGE_KEY = "simple-spring-learning-logs";
 
 function todayDate() {
   const d = new Date();
-  return formatDate(d);
-}
-
-function formatDate(date) {
-  const year = date.getFullYear();
-  const month = String(date.getMonth() + 1).padStart(2, "0");
-  const day = String(date.getDate()).padStart(2, "0");
-  return `${year}-${month}-${day}`;
+  const offset = d.getTimezoneOffset() * 60000;
+  return new Date(d.getTime() - offset).toISOString().slice(0, 10);
 }
 
 function getDayName(date) {
-  return new Date(date + "T00:00:00").toLocaleDateString("en-IN", {
+  return new Date(date).toLocaleDateString("en-IN", {
     weekday: "short",
     day: "2-digit",
     month: "short",
   });
 }
 
-function getMonthTitle(date) {
-  return date.toLocaleDateString("en-IN", {
-    month: "long",
-    year: "numeric",
-  });
-}
-
 function calculateStreak(logs) {
   const dates = [...new Set(logs.map((log) => log.date))];
   let streak = 0;
-  let current = new Date(todayDate() + "T00:00:00");
+  let current = new Date(todayDate());
 
   while (true) {
-    const date = formatDate(current);
+    const date = current.toISOString().slice(0, 10);
 
     if (dates.includes(date)) {
       streak++;
@@ -48,29 +35,6 @@ function calculateStreak(logs) {
   return streak;
 }
 
-function getCalendarDays(monthDate) {
-  const year = monthDate.getFullYear();
-  const month = monthDate.getMonth();
-
-  const firstDay = new Date(year, month, 1);
-  const lastDay = new Date(year, month + 1, 0);
-
-  const emptyDays = firstDay.getDay();
-  const totalDays = lastDay.getDate();
-
-  const days = [];
-
-  for (let i = 0; i < emptyDays; i++) {
-    days.push(null);
-  }
-
-  for (let day = 1; day <= totalDays; day++) {
-    days.push(new Date(year, month, day));
-  }
-
-  return days;
-}
-
 export default function App() {
   const [logs, setLogs] = useState(() => {
     const saved = localStorage.getItem(STORAGE_KEY);
@@ -81,9 +45,6 @@ export default function App() {
   const [minutes, setMinutes] = useState("30");
   const [topic, setTopic] = useState("Spring Boot");
 
-  const [showCalendar, setShowCalendar] = useState(false);
-  const [calendarMonth, setCalendarMonth] = useState(new Date());
-
   useEffect(() => {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(logs));
   }, [logs]);
@@ -91,12 +52,6 @@ export default function App() {
   const totalMinutes = logs.reduce((sum, log) => sum + Number(log.minutes), 0);
   const streak = calculateStreak(logs);
   const todayLog = logs.find((log) => log.date === todayDate());
-
-  const loggedDates = useMemo(() => {
-    return new Set(logs.map((log) => log.date));
-  }, [logs]);
-
-  const calendarDays = getCalendarDays(calendarMonth);
 
   function saveLog(e) {
     e.preventDefault();
@@ -124,18 +79,6 @@ export default function App() {
     setLogs(logs.filter((log) => log.id !== id));
   }
 
-  function previousMonth() {
-    setCalendarMonth(
-      new Date(calendarMonth.getFullYear(), calendarMonth.getMonth() - 1, 1)
-    );
-  }
-
-  function nextMonth() {
-    setCalendarMonth(
-      new Date(calendarMonth.getFullYear(), calendarMonth.getMonth() + 1, 1)
-    );
-  }
-
   return (
     <div className="app">
       <style>{css}</style>
@@ -150,74 +93,18 @@ export default function App() {
         </header>
 
         <section className="stats">
-          <button
-            className="card clickable-card"
-            onClick={() => setShowCalendar(!showCalendar)}
-          >
+          <div className="card">
             <span>Streak</span>
             <h2>{streak} days</h2>
-            <small>Click to view calendar</small>
-          </button>
+          </div>
 
           <div className="card">
             <span>Total Logs</span>
             <h2>{logs.length}</h2>
           </div>
 
-         
-
-        {showCalendar && (
-          <section className="calendar-card">
-            <div className="calendar-head">
-              <button onClick={previousMonth}>←</button>
-              <h2>{getMonthTitle(calendarMonth)}</h2>
-              <button onClick={nextMonth}>→</button>
-            </div>
-
-            <div className="calendar-info">
-              <span className="dot green"></span> Log done
-              <span className="dot red"></span> Missed
-              <span className="dot grey"></span> Future
-            </div>
-
-            <div className="week-days">
-              <span>Sun</span>
-              <span>Mon</span>
-              <span>Tue</span>
-              <span>Wed</span>
-              <span>Thu</span>
-              <span>Fri</span>
-              <span>Sat</span>
-            </div>
-
-            <div className="calendar-grid">
-              {calendarDays.map((day, index) => {
-                if (!day) {
-                  return <div className="calendar-day empty-day" key={index}></div>;
-                }
-
-                const dateString = formatDate(day);
-                const hasLog = loggedDates.has(dateString);
-                const isFuture = dateString > todayDate();
-                const isToday = dateString === todayDate();
-
-                let className = "calendar-day";
-
-                if (hasLog) className += " done";
-                else if (isFuture) className += " future";
-                else className += " missed";
-
-                if (isToday) className += " today";
-
-                return (
-                  <div className={className} key={dateString}>
-                    <span>{day.getDate()}</span>
-                  </div>
-                );
-              })}
-            </div>
-          </section>
-        )}
+          
+        </section>
 
         {todayLog && (
           <div className="done-box">
@@ -247,8 +134,7 @@ export default function App() {
               placeholder="Example: Aaj maine REST controller samjha aur ek simple GET API banaya..."
             />
 
-         
-
+           
             <button type="submit">Save Today&apos;s Progress</button>
           </form>
         </section>
@@ -343,8 +229,7 @@ h1 {
 .main-card,
 .log,
 .done-box,
-.empty,
-.calendar-card {
+.empty {
   background: rgba(255, 255, 255, 0.08);
   border: 1px solid rgba(255, 255, 255, 0.12);
   border-radius: 22px;
@@ -354,12 +239,6 @@ h1 {
 
 .card {
   padding: 18px;
-  text-align: left;
-}
-
-.clickable-card {
-  width: 100%;
-  cursor: pointer;
 }
 
 .card span {
@@ -372,125 +251,11 @@ h1 {
   font-size: 28px;
 }
 
-.card small {
-  display: block;
-  margin-top: 8px;
-  color: #38bdf8;
-  font-weight: 700;
-}
-
 .done-box {
   padding: 16px;
   margin-bottom: 18px;
   color: #bbf7d0;
   background: rgba(34, 197, 94, 0.12);
-}
-
-.calendar-card {
-  padding: 20px;
-  margin-bottom: 18px;
-}
-
-.calendar-head {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-}
-
-.calendar-head h2 {
-  margin: 0;
-  font-size: 22px;
-}
-
-.calendar-head button {
-  width: 42px;
-  height: 42px;
-  padding: 0;
-  border-radius: 50%;
-}
-
-.calendar-info {
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 10px;
-  color: #cbd5e1;
-  font-size: 13px;
-  margin: 16px 0;
-}
-
-.dot {
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  display: inline-block;
-}
-
-.dot.green {
-  background: #22c55e;
-}
-
-.dot.red {
-  background: #ef4444;
-}
-
-.dot.grey {
-  background: #64748b;
-}
-
-.week-days,
-.calendar-grid {
-  display: grid;
-  grid-template-columns: repeat(7, 1fr);
-  gap: 8px;
-}
-
-.week-days span {
-  text-align: center;
-  color: #94a3b8;
-  font-size: 13px;
-  font-weight: 700;
-}
-
-.calendar-grid {
-  margin-top: 8px;
-}
-
-.calendar-day {
-  min-height: 48px;
-  border-radius: 14px;
-  display: grid;
-  place-items: center;
-  font-weight: 800;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-.calendar-day.done {
-  background: rgba(34, 197, 94, 0.2);
-  color: #bbf7d0;
-  border-color: rgba(34, 197, 94, 0.45);
-}
-
-.calendar-day.missed {
-  background: rgba(239, 68, 68, 0.16);
-  color: #fecaca;
-  border-color: rgba(239, 68, 68, 0.35);
-}
-
-.calendar-day.future {
-  background: rgba(100, 116, 139, 0.15);
-  color: #94a3b8;
-}
-
-.calendar-day.today {
-  outline: 2px solid #38bdf8;
-  outline-offset: 2px;
-}
-
-.empty-day {
-  background: transparent;
-  border: none;
 }
 
 .main-card {
@@ -613,11 +378,6 @@ button:hover {
 
   .delete {
     width: 100%;
-  }
-
-  .calendar-day {
-    min-height: 40px;
-    font-size: 13px;
   }
 }
 `;
