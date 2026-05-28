@@ -142,10 +142,10 @@ export default function App() {
 
       <div className="container">
         <header className="hero">
-          <p className="small">Java + Spring Boot Daily Tracker</p>
-          <h1>Bas daily thoda sa progress.</h1>
+          <p className="small">Hey cutie ❤</p>
+          <h1>welcome Nainshi Srivastav</h1>
           <p className="sub">
-            Consistency ke liye simple tracker. Roz 1 line likho aur save karo.
+           Apni padhai ko yaha track kro 
           </p>
         </header>
 
@@ -179,7 +179,7 @@ export default function App() {
             </div>
 
             <div className="calendar-info">
-              <span className="dot green"></span> Log done
+              <span className="dot green"></span> Padhai hui
               <span className="dot red"></span> Missed
               <span className="dot grey"></span> Future
             </div>
@@ -235,20 +235,20 @@ export default function App() {
           <form onSubmit={saveLog}>
             <label>Topic</label>
             <select value={topic} onChange={(e) => setTopic(e.target.value)}>
-              <option>Java</option>
-              <option>Spring Boot</option>
-              <option>REST API</option>
-              <option>JPA / Hibernate</option>
-              <option>MySQL</option>
-              <option>Project Work</option>
-              <option>GitHub</option>
+              <option>English Speaking</option>
+              <option>Reasoning</option>
+              <option>Maths</option>
+              <option>Hindi</option>
+              <option>English</option>
+              <option>PYQ</option>
+              <option>Other</option>
             </select>
 
             <label>What did you learn today?</label>
             <textarea
               value={text}
               onChange={(e) => setText(e.target.value)}
-              placeholder="Example: Aaj maine REST controller samjha aur ek simple GET API banaya..."
+              placeholder="Example: Aaj maine English speaking sikhi..."
             />
 
             <label>Minutes</label>
