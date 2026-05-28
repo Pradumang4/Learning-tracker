@@ -143,9 +143,9 @@ export default function App() {
       <div className="container">
         <header className="hero">
           <p className="small">Hey cutie ❤</p>
-          <h1>welcome Nainshi Srivastav</h1>
+          <h1>Welcome Nainshi Srivastav     ❤</h1>
           <p className="sub">
-           Apni padhai ko yaha track kro 
+           Apni padhai ko yaha track kro ...  
           </p>
         </header>
 
