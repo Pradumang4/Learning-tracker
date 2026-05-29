@@ -225,7 +225,7 @@ export default function App() {
 
         {todayLog && (
           <div className="done-box">
-            ✅ Aaj ka log already saved hai. Good job bhai!
+            ✅ Aaj ka log already saved hai. Good job !
           </div>
         )}
 
