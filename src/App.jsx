@@ -135,6 +135,7 @@ export default function App() {
       new Date(calendarMonth.getFullYear(), calendarMonth.getMonth() + 1, 1)
     );
   }
+  
 
   return (
     <div className="app">
@@ -142,8 +143,8 @@ export default function App() {
 
       <div className="container">
         <header className="hero">
-          <p className="small">Hey cutie ❤</p>
-          <h1>Welcome Nainshi Srivastav     ❤</h1>
+          <p className="small">Hey, Have a good day</p>
+          <h1>Welcome Praduman Gupta</h1>
           <p className="sub">
            Apni padhai ko yaha track kro ...  
           </p>
@@ -235,12 +236,13 @@ export default function App() {
           <form onSubmit={saveLog}>
             <label>Topic</label>
             <select value={topic} onChange={(e) => setTopic(e.target.value)}>
+              
               <option>English Speaking</option>
               <option>Reasoning</option>
               <option>Maths</option>
-              <option>Hindi</option>
-              <option>English</option>
-              <option>PYQ</option>
+              <option>Spring boot</option>
+              <option>Web development</option>
+              <option>DSA</option>
               <option>Other</option>
             </select>
 
@@ -248,7 +250,7 @@ export default function App() {
             <textarea
               value={text}
               onChange={(e) => setText(e.target.value)}
-              placeholder="Example: Aaj maine English speaking sikhi..."
+              placeholder="Example: Aaj maine DSA me Graph padha..."
             />
 
             <label>Minutes</label>
